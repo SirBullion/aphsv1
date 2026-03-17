@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const toggle = header.querySelector(".nav-toggle");
     const nav = header.querySelector(".site-nav");
     if (!toggle || !nav) return;
+    let lastScrollY = window.scrollY;
 
     const closeMenu = () => {
       nav.classList.remove("is-open");
@@ -61,10 +62,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     window.addEventListener("resize", () => {
-      if (window.innerWidth > 640) {
+      if (window.innerWidth > 960) {
         closeMenu();
       }
     });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY < lastScrollY) {
+          closeMenu();
+        }
+        lastScrollY = currentScrollY;
+      },
+      { passive: true }
+    );
   });
 
   document.querySelectorAll("form[data-ajax-form]").forEach((form) => {

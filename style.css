@@ -530,9 +530,28 @@ form button:disabled {
   }
 
   .nav-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    justify-content: flex-start;
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .nav-links a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .site-nav {
+    display: none;
+    width: 100%;
+  }
+
+  .site-nav.is-open {
+    display: block;
   }
 }
 
@@ -550,18 +569,6 @@ form button:disabled {
     height: 70px;
   }
 
-  .nav-links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
-    gap: 8px;
-  }
-
-  .nav-links a {
-    width: 100%;
-    justify-content: center;
-  }
-
   .section {
     padding: 56px 0;
   }
@@ -574,19 +581,6 @@ form button:disabled {
 
   .cta-buttons {
     flex-direction: column;
-  }
-
-  .nav-toggle {
-    display: inline-flex;
-  }
-
-  .site-nav {
-    display: none;
-    width: 100%;
-  }
-
-  .site-nav.is-open {
-    display: block;
   }
 }
 
