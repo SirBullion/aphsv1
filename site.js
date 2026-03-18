@@ -41,6 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
     statusNode.className = type ? "form-status " + type : "form-status";
   }
 
+  function hasTurnstileToken(form) {
+    const turnstileResponse = form.querySelector('input[name="cf-turnstile-response"]');
+    return !!(turnstileResponse && turnstileResponse.value && turnstileResponse.value.trim());
+  }
+
   document.querySelectorAll(".site-header").forEach((header) => {
     const toggle = header.querySelector(".nav-toggle");
     const nav = header.querySelector(".site-nav");
@@ -128,6 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      if (form.querySelector(".cf-turnstile") && !hasTurnstileToken(form)) {
+        setStatus(status, "Please verify you are human.", "is-error");
+        return;
+      }
+
       if (emailInput) {
         const email = emailInput.value.trim();
         if (!emailRegex.test(email)) {
@@ -180,15 +190,38 @@ document.addEventListener("DOMContentLoaded", () => {
             payload = null;
           }
 
-          if (payload && Array.isArray(payload.errors)) {
-            const emailError = payload.errors.find((err) => err.field === "email");
-            const phoneError = payload.errors.find((err) => err.field === "phone");
-            if (emailError) {
-              errorMessage = "Email is not valid. Please enter a valid email address.";
-            } else if (phoneError) {
-              errorMessage = "Phone number is not valid. Please check the number and try again.";
+          if (payload) {
+            if (Array.isArray(payload.errors) && payload.errors.length > 0) {
+              // Prefer specific backend error messages so users can fix the issue.
+              const emailError = payload.errors.find((err) => err.field === "email");
+              const phoneError = payload.errors.find((err) => err.field === "phone");
+              if (emailError) {
+                errorMessage = "Email is not valid. Please enter a valid email address.";
+              } else if (phoneError) {
+                errorMessage = "Phone number is not valid. Please check the number and try again.";
+              } else {
+                const turnstileError = payload.errors.find((err) => {
+                  if (!err) return false;
+                  const field = typeof err.field === "string" ? err.field.toLowerCase() : "";
+                  const message = typeof err.message === "string" ? err.message.toLowerCase() : "";
+                  return field.includes("turnstile") || message.includes("turnstile") || message.includes("captcha");
+                });
+                if (turnstileError) {
+                  errorMessage = "Please verify you are human.";
+                  throw new Error(errorMessage);
+                }
+                const firstMessage = payload.errors.find((err) => err && typeof err.message === "string");
+                if (firstMessage && firstMessage.message.trim()) {
+                  errorMessage = firstMessage.message.trim();
+                }
+              }
+            } else if (typeof payload.error === "string" && payload.error.trim()) {
+              errorMessage = payload.error.trim();
+            } else if (typeof payload.message === "string" && payload.message.trim()) {
+              errorMessage = payload.message.trim();
             }
           }
+
           throw new Error(errorMessage);
         }
 
