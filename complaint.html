@@ -62,7 +62,7 @@
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="visually-hidden" />
 
         <label for="complaint-name">Full Name:</label>
-        <input type="text" id="complaint-name" name="full_name" required />
+        <input type="text" id="complaint-name" name="full_name" pattern="^(?![0-9\\s'-]+$).+" title="Name cannot be numbers only." required />
 
         <label for="complaint-email">Email Address:</label>
         <input type="email" id="complaint-email" name="email" required />

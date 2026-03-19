@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const compact = trimmed.replace(/[\s'-]/g, "");
     if (!compact) return false;
 
-    return /[\p{L}]/u.test(compact);
+    return !/^\d+$/.test(compact);
   }
 
   function validateNameInput(input) {
