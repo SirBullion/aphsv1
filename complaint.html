@@ -92,10 +92,10 @@
         <input type="date" id="complaint-date" name="incident_date" />
 
         <label for="complaint-details">Complaint Details:</label>
-        <textarea id="complaint-details" name="complaint_details" rows="8" required></textarea>
+        <textarea id="complaint-details" name="complaint_details" rows="8" maxlength="500" required></textarea>
 
         <label for="complaint-outcome">Preferred Outcome (Optional):</label>
-        <textarea id="complaint-outcome" name="preferred_outcome" rows="4"></textarea>
+        <textarea id="complaint-outcome" name="preferred_outcome" rows="4" maxlength="500"></textarea>
 
         <!-- Cloudflare Turnstile bot protection -->
         <div class="cf-turnstile" data-sitekey="0x4AAAAAACscmaMVveLnEmmi"></div>

@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const nameFieldSelector =
+    'input[type="text"][name="name"], input[type="text"][name="full_name"], input[type="text"][name="fullname"], input[type="text"][name="referrer-name"], input[type="text"][name="client-name"]';
+  const maxMessageLength = 500;
 
   function normalizeAuPhone(value) {
     const trimmed = (value || "").trim();
@@ -39,6 +42,49 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!statusNode) return;
     statusNode.textContent = message;
     statusNode.className = type ? "form-status " + type : "form-status";
+  }
+
+  function isNameValid(value) {
+    const trimmed = (value || "").trim();
+    if (!trimmed) return false;
+
+    const compact = trimmed.replace(/[\s'-]/g, "");
+    if (!compact) return false;
+
+    return /[\p{L}]/u.test(compact);
+  }
+
+  function validateNameInput(input) {
+    if (!input) return true;
+
+    const value = input.value.trim();
+    if (!value) {
+      input.setCustomValidity("");
+      return true;
+    }
+
+    if (!isNameValid(value)) {
+      input.setCustomValidity("Name must include letters and cannot be numbers only.");
+      input.reportValidity();
+      return false;
+    }
+
+    input.setCustomValidity("");
+    return true;
+  }
+
+  function validateTextAreaLength(textarea) {
+    if (!textarea) return true;
+
+    const value = textarea.value || "";
+    if (value.length > maxMessageLength) {
+      textarea.setCustomValidity(`Message must be ${maxMessageLength} characters or fewer.`);
+      textarea.reportValidity();
+      return false;
+    }
+
+    textarea.setCustomValidity("");
+    return true;
   }
 
   function hasTurnstileToken(form) {
@@ -90,6 +136,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = form.querySelector('button[type="submit"]');
     const emailInput = form.querySelector('input[type="email"]');
     const phoneInput = form.querySelector('input[type="tel"]');
+    const nameInputs = form.querySelectorAll(nameFieldSelector);
+    const messageFields = form.querySelectorAll("textarea");
+
+    nameInputs.forEach((nameInput) => {
+      nameInput.addEventListener("input", () => {
+        nameInput.setCustomValidity("");
+      });
+      nameInput.addEventListener("blur", () => {
+        validateNameInput(nameInput);
+      });
+    });
+
+    messageFields.forEach((messageField) => {
+      messageField.maxLength = maxMessageLength;
+      messageField.addEventListener("input", () => {
+        validateTextAreaLength(messageField);
+      });
+      messageField.addEventListener("blur", () => {
+        validateTextAreaLength(messageField);
+      });
+    });
 
     if (emailInput) {
       emailInput.addEventListener("input", () => {
@@ -132,6 +199,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
+
+      for (const nameInput of nameInputs) {
+        if (!validateNameInput(nameInput)) {
+          return;
+        }
+      }
+
+      for (const messageField of messageFields) {
+        if (!validateTextAreaLength(messageField)) {
+          return;
+        }
+      }
 
       if (form.querySelector(".cf-turnstile") && !hasTurnstileToken(form)) {
         setStatus(status, "Please verify you are human.", "is-error");

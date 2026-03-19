@@ -520,13 +520,15 @@ form button:disabled {
   }
 
   .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .site-header .container {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .nav-links {
@@ -548,6 +550,7 @@ form button:disabled {
   .site-nav {
     display: none;
     width: 100%;
+    flex-basis: 100%;
   }
 
   .site-nav.is-open {
