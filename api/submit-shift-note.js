@@ -114,7 +114,7 @@ export default async function handler(request, response) {
     });
     return json(response, 200, { ok: true, message: "Shift note submitted successfully." });
   } catch (error) {
-    console.error("Shift note delivery failed:", error.message);
-    return json(response, 502, { error: "The shift note could not be emailed. Please try again." });
+    console.error("SMTP send failed:", error.message, error.code);
+    return json(response, 500, { error: "The shift note could not be emailed. Please try again." });
   }
 }
