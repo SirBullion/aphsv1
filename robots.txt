@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /shift-notes.html
+Disallow: /login.html
 
 Sitemap: https://aphsnt.com.au/sitemap.xml

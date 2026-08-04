@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shift Notes | All People Holistic Support</title>
+  <meta name="description" content="Secure staff shift note submission for All People Holistic Support." />
+  <meta name="author" content="All People Holistic Support Pty Ltd" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="Shift Notes | All People Holistic Support" />
+  <meta property="og:description" content="Secure staff shift note submission." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://aphsnt.com.au/shift-notes.html" />
+  <meta property="og:image" content="https://aphsnt.com.au/logo.png" />
+  <meta property="og:locale" content="en_AU" />
+  <link rel="canonical" href="https://aphsnt.com.au/shift-notes.html" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+</head>
+<body>
+  <header class="site-header"><div class="container header-inner">
+    <a href="index.html" class="logo-link"><img src="logo.png" alt="All People Holistic Support logo" class="logo" /></a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">Menu</button>
+    <nav class="site-nav" aria-label="Main navigation"><ul class="nav-links">
+      <li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="services.html">Services</a></li><li><a href="refer.html">Referrals</a></li><li><a href="careers.html">Work With Us</a></li><li><a href="contact.html">Contact</a></li>
+    </ul></nav>
+  </div></header>
+  <main class="section"><div class="container">
+    <h1>Staff Shift Notes</h1><p>Submit the details and notes for your completed shift.</p>
+    <form class="contact-form" action="/api/submit-shift-note" method="POST" data-ajax-form data-status-id="shift-note-status" data-success-message="Thank you. The shift note has been submitted successfully.">
+      <input type="hidden" name="form_type" value="shift_note" />
+      <input type="hidden" name="source_page" value="shift-notes.html" />
+      <label for="shift-date">Date:</label><input type="date" id="shift-date" name="date" required />
+      <label for="participant">Participant:</label><input type="text" id="participant" name="participant" maxlength="150" required />
+      <label for="staff-name">Staff Name:</label><input type="text" id="staff-name" name="staff_name" maxlength="150" required />
+      <label for="shift-start">Shift Start Time:</label><input type="time" id="shift-start" name="shift_start" required />
+      <label for="shift-end">Shift End Time:</label><input type="time" id="shift-end" name="shift_end" required />
+      <label for="notes">Notes:</label><textarea id="notes" name="notes" rows="8" maxlength="3000" required></textarea>
+      <button type="submit" class="btn">Submit Shift Note</button><p id="shift-note-status" class="form-status" aria-live="polite"></p>
+    </form>
+  </div></main>
+  <footer class="site-footer"><div class="container">
+    <p>&copy; <span class="js-current-year">2026</span> All People Holistic Support Pty Ltd. ABN 91 688 660 657. Serving Country, Community, and Culture.</p>
+    <p class="acknowledgement">We acknowledge the Traditional Custodians of the lands we work on and pay our respects to Elders past, present and emerging.</p>
+  </div></footer>
+  <script src="site.js"></script>
+</body>
+</html>

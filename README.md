@@ -7,7 +7,8 @@ Static website for **All People Holistic Support**.
 - HTML (`index.html`, `about.html`, `services.html`, `refer.html`, `careers.html`, `contact.html`, `feedback.html`, `complaint.html`)
 - CSS (`style.css`)
 - Vanilla JS (`site.js`)
-- Form handling via Formspree
+- Public form handling via Formspree
+- Staff shift notes via authenticated Vercel Functions and Zoho Mail SMTP
 
 ## Project Structure
 
@@ -19,12 +20,45 @@ Static website for **All People Holistic Support**.
 - `contact.html`: Contact form page
 - `feedback.html`: Feedback form page
 - `complaint.html`: Complaint form page
+- `login.html`: Unlisted staff login page
+- `shift-notes.html`: Unlisted, authenticated staff shift-note form
+- `middleware.js`: Server-side authentication gate for `/shift-notes.html` only
+- `api/login.js`: Password login and signed session-cookie endpoint
+- `api/submit-shift-note.js`: Authenticated validation and Zoho Mail SMTP delivery
+- `lib/auth.js`: Shared HMAC session signing and verification
 - `style.css`: Shared styles
 - `site.js`: Shared JS for:
   - dynamic footer year (`.js-current-year`)
   - AJAX form submit handling (`data-ajax-form`)
   - success/error status messages
 - `logo.png`, `favicon.png`, `bg.gif`: Site assets
+
+## Staff Shift Notes
+
+The unlisted `/shift-notes.html` page is protected by Vercel Edge Middleware. The middleware runs only for that exact path and verifies the signed, eight-hour `shift_session` cookie. Visitors without a valid session are redirected to `/login.html?redirect=/shift-notes.html`.
+
+The login API compares the supplied password in constant time, applies basic per-instance rate limiting, and sets an HTTP-only, Secure, SameSite=Strict cookie. Shift-note submissions are authenticated again in the serverless handler, validated and sanitized server-side, then emailed through Zoho Mail SMTP. Participant names are entered as plain text and are never embedded in the page source.
+
+Required environment variables are documented in [`.env.example`](.env.example):
+
+- `SESSION_SECRET`
+- `SHIFT_NOTES_PASSWORD`
+- `ZOHO_SMTP_HOST`
+- `ZOHO_SMTP_PORT`
+- `ZOHO_SMTP_USER`
+- `ZOHO_SMTP_APP_PASSWORD`
+- `SHIFT_NOTES_EMAIL_TO`
+
+
+## Setup Steps
+
+1. In Zoho Accounts, generate an app-specific password for the sending mailbox under Security > App Passwords: https://accounts.zoho.com/home#security/app_password
+2. Confirm the SMTP host and SSL port for the Zoho account data center. The common defaults are `smtp.zoho.com` and port `465`, but regional accounts may differ.
+3. Choose a strong, unique staff password for `SHIFT_NOTES_PASSWORD`.
+4. Generate a long random `SESSION_SECRET` (at least 32 random bytes; do not reuse the staff password).
+5. In the Vercel project dashboard, add `ZOHO_SMTP_HOST`, `ZOHO_SMTP_PORT`, `ZOHO_SMTP_USER`, and `ZOHO_SMTP_APP_PASSWORD` from [`.env.example`](.env.example), along with `SESSION_SECRET`, `SHIFT_NOTES_PASSWORD`, and `SHIFT_NOTES_EMAIL_TO`, for Production and any Preview environments you use.
+6. Redeploy the Vercel project so the functions and middleware receive the new environment variables.
+7. Visit `/shift-notes.html`, confirm it redirects to login, sign in, submit a test note, and verify that it arrives at the destination inbox.
 
 ## Deploy
 
@@ -90,6 +124,6 @@ Implemented:
 
 ## Notes
 
-- No backend code in this project.
+- The staff shift-note feature requires Vercel Functions, Vercel Middleware, and the environment variables above.
 - If Formspree endpoint changes, update all form `action` attributes.
 - Keep files ASCII/plain UTF-8 text.
