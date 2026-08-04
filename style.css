@@ -476,6 +476,10 @@ form button:disabled {
   transform: none;
 }
 
+#staff-login-form button[type="submit"] {
+  margin-top: 20px;
+}
+
 .form-status {
   margin-top: 14px;
   min-height: 1.5em;
